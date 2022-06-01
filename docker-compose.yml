@@ -1,0 +1,8 @@
+version: "3.7"
+
+services:
+  heartbleed:
+    build: .
+    container_name: heartbleed
+    ports:
+      - "443:443"
