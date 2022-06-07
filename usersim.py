@@ -47,13 +47,13 @@ def create_requests(host: str, login_only: bool):
 
 
 def main():
+    opts, args = options.parse_args()
+    if len(args) < 1:
+        options.print_help()
+        return
+    host = args[0] + ":" + str(opts.port)
+    req = create_requests(host, opts.login_only)
     while 1:
-        opts, args = options.parse_args()
-        if len(args) < 1:
-            options.print_help()
-            return
-        host = args[0] + ":" + str(opts.port)
-        req = create_requests(host, opts.login_only)
         rand = random.randrange(1, len(req))
         r = requests.get(req[rand], verify=False)
         if opts.verbose:
