@@ -1,3 +1,4 @@
+import urllib3
 import random
 import time
 from optparse import OptionParser
@@ -47,6 +48,8 @@ def create_requests(host: str, login_only: bool):
 
 
 def main():
+    assert len(users) == len(passwds)
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     opts, args = options.parse_args()
     if len(args) < 1:
         options.print_help()
