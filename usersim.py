@@ -2,7 +2,9 @@ import urllib3
 import random
 import time
 from optparse import OptionParser
-import requests
+from urllib.parse import quote_plus
+import socket
+import ssl
 
 options = OptionParser(usage='%prog server [options]',
                        description='Simulate normal user traffic to openssl server')
@@ -32,6 +34,18 @@ passwds = [
 ]
 
 
+def do_custom_request(hostname: str, port: int, user: str, passwd: str) -> None:
+    context = ssl.SSLContext()
+    with socket.create_connection((hostname, port)) as sock:
+        with context.wrap_socket(sock, server_hostname=hostname, do_handshake_on_connect=False) as ssock:
+            buf = b'POST ' + '/login.php'.encode('ascii') + b' HTTP/1.0\n'
+            buf += b'Content-Type: application/x-www-form-urlencoded\n'
+            buf += b'\n'
+            buf += b'user=' + quote_plus(user).encode('ascii') + b'&passwd=' + quote_plus(passwd).encode('ascii')
+            print(buf)
+            ssock.send(buf)
+
+
 def create_requests(host: str, login_only: bool):
     request = [""]
     for i in range(len(users)):
@@ -54,14 +68,23 @@ def main():
     if len(args) < 1:
         options.print_help()
         return
-    host = args[0] + ":" + str(opts.port)
-    req = create_requests(host, opts.login_only)
     while 1:
-        rand = random.randrange(1, len(req))
-        r = requests.get(req[rand], verify=False)
-        if opts.verbose:
-            print(req[rand])
-            print(r)
+        rand = random.randrange(0, len(users))
+        do_custom_request('localhost', opts.port, users[rand], passwds[rand])
+        # try:
+        #     requests.post(f'https://{host}/login.php',
+        #                   data={'user': users[rand], 'passwd': passwds[rand]},
+        #                   headers={'Content-Type': 'application/x-www-form-urlencoded'},
+        #                   verify=False,
+        #                   timeout=.001
+        #                   )
+        # except requests.exceptions.ReadTimeout:
+        #     print('read timeout, that is expected ...')
+        # except requests.exceptions.ConnectionError as ce:
+        #     print(ce)
+        #     raise ce
+        # if opts.verbose:
+        #     print(req[rand])
         time.sleep(opts.delay)
 
 
