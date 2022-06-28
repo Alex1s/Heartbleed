@@ -27,6 +27,9 @@ ADD entrypoint.sh /root/entrypoint.sh
 ADD tail_error.sh /root/tail_error.sh
 ADD tail_access.sh /root/tail_access.sh
 
+# now php ...
+RUN apt install -y php-fpm
+
 EXPOSE 80/tcp
 EXPOSE 443/tcp
 

@@ -6,6 +6,7 @@ from urllib.parse import quote_plus
 import socket
 import ssl
 import requests
+import urllib3
 
 options = OptionParser(usage='%prog server [options]',
                        description='Simulate normal user traffic to openssl server')
@@ -64,7 +65,7 @@ def create_requests(host: str, login_only: bool):
 
 def main():
     assert len(users) == len(passwds)
-    # urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     opts, args = options.parse_args()
     if len(args) < 1:
         options.print_help()
@@ -74,10 +75,9 @@ def main():
             requests.post(f'https://{"localhost"}/login.php',
                           data={'user': users[rand], 'passwd': passwds[rand]},
                           headers={'Content-Type': 'application/x-www-form-urlencoded'},
-                          verify=False,
-                          timeout=.001
-          )
-        rand = random.randrange(0, len(users))
+                          verify=False
+                          )
+            print('request done!')
         # do_custom_request('localhost', opts.port, users[rand], passwds[rand])
         # try:
         #     requests.post(f'https://{host}/login.php',
@@ -93,7 +93,7 @@ def main():
         #     raise ce
         # if opts.verbose:
         #     print(req[rand])
-        time.sleep(opts.delay)
+            time.sleep(opts.delay)
 
 
 if __name__ == '__main__':

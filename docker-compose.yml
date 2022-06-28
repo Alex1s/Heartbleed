@@ -6,3 +6,5 @@ services:
     container_name: heartbleed
     ports:
       - "443:443"
+    volumes:
+      - ./html:/usr/local/nginx/html
