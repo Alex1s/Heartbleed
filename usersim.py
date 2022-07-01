@@ -43,7 +43,7 @@ def do_custom_request(hostname: str, port: int, user: str, passwd: str) -> None:
             buf = b'POST ' + '/login.php'.encode('ascii') + b' HTTP/1.0\n'
             buf += b'Content-Type: application/x-www-form-urlencoded\n'
             buf += b'\n'
-            buf += b'user=' + quote_plus(user).encode('ascii') + b'&passwd=' + quote_plus(passwd).encode('ascii')
+            buf += b'username=' + quote_plus(user).encode('ascii') + b'&password=' + quote_plus(passwd).encode('ascii')
             print(buf)
             ssock.send(buf)
 
