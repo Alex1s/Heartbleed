@@ -18,7 +18,7 @@ $passwd = [
 if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    if (isset($passwd[$username]) && $passwd[$username] === $password) {
+    if ($passwd[$username] == $password) {
         $_SESSION['login'] = true;
         header('LOCATION:admin.php');
         die();
